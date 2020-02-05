@@ -16,15 +16,7 @@ from tabpy.tabpy_server.management.state import TabPyState
 from tabpy.tabpy_server.management.util import _get_state_from_file
 from tabpy.tabpy_server.psws.callbacks import init_model_evaluator, init_ps_server
 from tabpy.tabpy_server.psws.python_service import PythonService, PythonServiceHandler
-from tabpy.tabpy_server.handlers import (
-    EndpointHandler,
-    EndpointsHandler,
-    EvaluationPlaneHandler,
-    QueryPlaneHandler,
-    ServiceInfoHandler,
-    StatusHandler,
-    UploadDestinationHandler,
-)
+from tabpy.tabpy_server.handlers import *
 import tornado
 
 
@@ -136,9 +128,6 @@ class TabPyApp:
         _init_asyncio_patch()
         application = TabPyTornadoApp(
             [
-                # skip MainHandler to use StaticFileHandler .* page requests and
-                # default to index.html
-                # (r"/", MainHandler),
                 (
                     self.subdirectory + r"/query/([^/]+)",
                     QueryPlaneHandler,
@@ -162,11 +151,16 @@ class TabPyApp:
                     UploadDestinationHandler,
                     dict(app=self),
                 ),
+                (self.subdirectory + r"/", MainHandler, dict(app=self)),
+                (self.subdirectory + r"/login", LoginHandler, dict(app=self)),
+                (self.subdirectory + r"/users", UsersHandler, dict(app=self)),
                 (
                     self.subdirectory + r"/(.*)",
                     tornado.web.StaticFileHandler,
                     dict(
-                        path=self.settings[SettingsParameters.StaticPath],
+                        path=os.path.join(
+                            self.settings[SettingsParameters.StaticPath],
+                            "templates"),
                         default_filename="index.html",
                     ),
                 ),
@@ -264,13 +258,21 @@ class TabPyApp:
             (SettingsParameters.KeyFile, ConfigParameters.TABPY_KEY_FILE, None),
             (SettingsParameters.StateFilePath, ConfigParameters.TABPY_STATE_PATH,
              os.path.join(pkg_path, "tabpy_server")),
-            (SettingsParameters.StaticPath, ConfigParameters.TABPY_STATIC_PATH,
-             os.path.join(pkg_path, "tabpy_server", "static")),
             (ConfigParameters.TABPY_PWD_FILE, ConfigParameters.TABPY_PWD_FILE, None),
             (SettingsParameters.LogRequestContext, ConfigParameters.TABPY_LOG_DETAILS,
              "false"),
             (SettingsParameters.MaxRequestSizeInMb, ConfigParameters.TABPY_MAX_REQUEST_SIZE_MB,
              100),
+            #Do not reconfigure static url
+            (SettingsParameters.StaticPath, None,
+             os.path.join(pkg_path, "tabpy_server", "static")),
+            #Do not reconfigure login url
+            (SettingsParameters.LoginUrl, None, "/login"),
+            #Do not reconfigure template path
+            (SettingsParameters.TemplatePath, None, 
+                os.path.join(pkg_path, "tabpy_server", "static", "templates")),
+            (SettingsParameters.CookieSecret, ConfigParameters.TABPY_COOKIE,
+                "Default_Cookie")
         ]
 
         for setting, parameter, default_val in settings_parameters:

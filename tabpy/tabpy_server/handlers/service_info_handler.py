@@ -1,6 +1,6 @@
 import json
 from tabpy.tabpy_server.app.SettingsParameters import SettingsParameters
-from tabpy.tabpy_server.handlers import ManagementHandler
+from tabpy.tabpy_server.handlers.management_handler import ManagementHandler
 
 
 class ServiceInfoHandler(ManagementHandler):
@@ -19,4 +19,4 @@ class ServiceInfoHandler(ManagementHandler):
         info["server_version"] = self.settings[SettingsParameters.ServerVersion]
         info["name"] = self.tabpy_state.name
         info["versions"] = self.settings[SettingsParameters.ApiVersions]
-        self.write(json.dumps(info))
+        self.finish(json.dumps(info))

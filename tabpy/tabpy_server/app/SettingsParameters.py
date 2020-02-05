@@ -15,3 +15,6 @@ class SettingsParameters:
     StaticPath = "static_path"
     MaxRequestSizeInMb = "max_request_size_in_mb"
     EvaluateTimeout = "evaluate_timeout"
+    LoginUrl = "login_url"
+    TemplatePath = "template_path"
+    CookieSecret = "cookie_secret"

@@ -23,7 +23,7 @@ class EndpointsHandler(ManagementHandler):
             return
 
         self._add_CORS_header()
-        self.write(json.dumps(self.tabpy_state.get_endpoints()))
+        self.finish(json.dumps(self.tabpy_state.get_endpoints()))
 
     @gen.coroutine
     def post(self):
@@ -34,19 +34,16 @@ class EndpointsHandler(ManagementHandler):
         try:
             if not self.request.body:
                 self.error_out(400, "Input body cannot be empty")
-                self.finish()
                 return
 
             try:
                 request_data = json.loads(self.request.body.decode("utf-8"))
             except Exception as ex:
                 self.error_out(400, "Failed to decode input body", str(ex))
-                self.finish()
                 return
 
             if "name" not in request_data:
                 self.error_out(400, "name is required to add an endpoint.")
-                self.finish()
                 return
 
             name = request_data["name"]
@@ -54,7 +51,6 @@ class EndpointsHandler(ManagementHandler):
             # check if endpoint already exist
             if name in self.tabpy_state.get_endpoints():
                 self.error_out(400, f"endpoint {name} already exists.")
-                self.finish()
                 return
 
             self.logger.log(logging.DEBUG, f'Adding endpoint "{name}"')
@@ -64,12 +60,10 @@ class EndpointsHandler(ManagementHandler):
             else:
                 self.logger.log(logging.DEBUG, f"Endpoint {name} successfully added")
                 self.set_status(201)
-                self.write(self.tabpy_state.get_endpoints(name))
-                self.finish()
+                self.finish(self.tabpy_state.get_endpoints(name))
                 return
 
         except Exception as e:
             err_msg = format_exception(e, "/add_endpoint")
             self.error_out(500, "error adding endpoint", err_msg)
-            self.finish()
             return

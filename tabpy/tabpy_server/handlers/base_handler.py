@@ -6,6 +6,8 @@ import logging
 import tornado.web
 from tabpy.tabpy_server.app.SettingsParameters import SettingsParameters
 from tabpy.tabpy_server.handlers.util import hash_password
+from tabpy.tabpy_server.app.util import parse_pwd_file
+from tabpy.tabpy_server.app.ConfigParameters import ConfigParameters
 import uuid
 
 
@@ -120,6 +122,29 @@ class ContextLoggerWrapper:
 
         logging.getLogger(__name__).log(level, extended_msg)
 
+def authentication_wrapper(func):
+    """
+    Accepts a rest request as a function and then authenticates the user
+    using cookies to allow access to other pages.
+    """
+    def wrapper(*args):
+        self = args[0]
+        self.username = self.get_cookie("username")
+        self.password = self.get_cookie("password")
+        if not self.username:
+            self.username = "AnonymousUser"
+            self.password = ""
+        #Handles username and password implicitly though self attributes.
+        #not_authorized indicates that credentials are required
+        if (self._validate_basic_auth_credentials() 
+            or self.not_authorized == False):
+            return func(*args)
+        else:
+            self.set_status(400, "Invalid username or password.")
+            self.redirect("/login")
+    return wrapper
+
+
 
 class BaseHandler(tornado.web.RequestHandler):
     def initialize(self, app):
@@ -140,11 +165,10 @@ class BaseHandler(tornado.web.RequestHandler):
         )
         self.logger.log(logging.DEBUG, "Checking if need to handle authentication")
         self.not_authorized = not self.handle_authentication("v1")
+        self.items = {"info": self.get_basic_info()}
 
     def error_out(self, code, log_message, info=None):
         self.set_status(code)
-        self.write(json.dumps({"message": log_message, "info": info or {}}))
-
         # We want to duplicate error message in console for
         # loggers are misconfigured or causing the failure
         # themselves
@@ -155,7 +179,7 @@ class BaseHandler(tornado.web.RequestHandler):
                 code, log_message, info
             ),
         )
-        self.finish()
+        self.finish(json.dumps({"message": log_message, "info": info or {}}))
 
     def options(self):
         # add CORS headers if TabPy has a cors_origin specified
@@ -430,3 +454,23 @@ class BaseHandler(tornado.web.RequestHandler):
             info="Unauthorized request.",
             log_message="Invalid credentials provided.",
         )
+
+    def get_basic_info(self):
+        """
+        Used to fetch simple server info for display in a web page.
+        """
+        info = {
+        "name": self.tabpy_state.name,
+        "description": self.tabpy_state.get_description(),
+        "creation_time": self.tabpy_state.creation_time,
+        "server_version": self.settings[SettingsParameters.ServerVersion]
+        }
+        return info
+
+    def get_users(self):
+        if ConfigParameters.TABPY_PWD_FILE in self.settings:
+            succeeded, credentials = parse_pwd_file(
+                self.settings[ConfigParameters.TABPY_PWD_FILE])
+            if succeeded:
+                return {"users": [user for user in credentials.keys()]}
+        return {}

@@ -1,7 +1,19 @@
-from tabpy.tabpy_server.handlers import BaseHandler
+"""
+This is the index page for the tabpy app 
+http://myserver:9004/
+"""
+
+from tabpy.tabpy_server.handlers.management_handler import ManagementHandler
+from tabpy.tabpy_server.handlers.base_handler import authentication_wrapper
+import logging
 
 
-class MainHandler(BaseHandler):
+class MainHandler(ManagementHandler):
+    def initialize(self, app):
+        super(MainHandler, self).initialize(app)
+
+
+    @authentication_wrapper
     def get(self):
-        self._add_CORS_header()
-        self.render("/static/index.html")
+        self.clear()
+        self.render("index.html", items=self.items)

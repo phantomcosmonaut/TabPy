@@ -24,6 +24,5 @@ class StatusHandler(BaseHandler):
             }
 
         self.logger.log(logging.DEBUG, f"Found models: {status_dict}")
-        self.write(json.dumps(status_dict))
-        self.finish()
+        self.finish(json.dumps(status_dict))
         return

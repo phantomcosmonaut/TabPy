@@ -65,7 +65,6 @@ def store_passwords_file(pwdfile, credentials):
 
 def add_user(args, credentials):
     username = args["--username"].lower()
-    logger.info(f'Adding username "{username}"')
 
     if username in credentials:
         logger.error(
@@ -74,7 +73,8 @@ def add_user(args, credentials):
             '"update" command instead?'
         )
         return False
-
+        
+    logger.info(f'Adding username "{username}"')
     password = args["--password"]
     logger.info(f'Adding username "{username}" with password "{password}"...')
     credentials[username] = hash_password(username, password)

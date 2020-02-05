@@ -93,10 +93,9 @@ class EvaluationPlaneHandler(BaseHandler):
             return
 
         if result is not None:
-            self.write(simplejson.dumps(result, ignore_nan=True))
+            self.finish(simplejson.dumps(result, ignore_nan=True))
         else:
-            self.write("null")
-        self.finish()
+            self.finish("null")
 
     @gen.coroutine
     def post(self):

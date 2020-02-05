@@ -17,4 +17,4 @@ class UploadDestinationHandler(ManagementHandler):
 
         path = self.settings[SettingsParameters.StateFilePath]
         path = os.path.join(path, _QUERY_OBJECT_STAGING_FOLDER)
-        self.write({"path": path})
+        self.finish({"path": path})

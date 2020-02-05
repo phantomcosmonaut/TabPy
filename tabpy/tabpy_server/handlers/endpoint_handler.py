@@ -30,10 +30,10 @@ class EndpointHandler(ManagementHandler):
 
         self._add_CORS_header()
         if not endpoint_name:
-            self.write(json.dumps(self.tabpy_state.get_endpoints()))
+            self.finish(json.dumps(self.tabpy_state.get_endpoints()))
         else:
             if endpoint_name in self.tabpy_state.get_endpoints():
-                self.write(json.dumps(self.tabpy_state.get_endpoints()[endpoint_name]))
+                self.finish(json.dumps(self.tabpy_state.get_endpoints()[endpoint_name]))
             else:
                 self.error_out(
                     404,
@@ -52,7 +52,6 @@ class EndpointHandler(ManagementHandler):
         try:
             if not self.request.body:
                 self.error_out(400, "Input body cannot be empty")
-                self.finish()
                 return
             try:
                 request_data = json.loads(self.request.body.decode("utf-8"))
@@ -60,32 +59,29 @@ class EndpointHandler(ManagementHandler):
                 self.error_out(
                     400, log_message="Failed to decode input body", info=str(ex)
                 )
-                self.finish()
                 return
 
             # check if endpoint exists
             endpoints = self.tabpy_state.get_endpoints(name)
             if len(endpoints) == 0:
                 self.error_out(404, f"endpoint {name} does not exist.")
-                self.finish()
                 return
 
             new_version = int(endpoints[name]["version"]) + 1
             self.logger.log(logging.INFO, f"Endpoint info: {request_data}")
+
+            #will raise error message if update fails, else None
             err_msg = yield self._add_or_update_endpoint(
                 "update", name, new_version, request_data
             )
             if err_msg:
                 self.error_out(400, err_msg)
-                self.finish()
             else:
-                self.write(self.tabpy_state.get_endpoints(name))
-                self.finish()
+                self.finish(self.tabpy_state.get_endpoints(name))
 
         except Exception as e:
             err_msg = format_exception(e, "update_endpoint")
             self.error_out(500, err_msg)
-            self.finish()
 
     @gen.coroutine
     def delete(self, name):
@@ -99,7 +95,6 @@ class EndpointHandler(ManagementHandler):
             endpoints = self.tabpy_state.get_endpoints(name)
             if len(endpoints) == 0:
                 self.error_out(404, f"endpoint {name} does not exist.")
-                self.finish()
                 return
 
             # update state
@@ -107,7 +102,6 @@ class EndpointHandler(ManagementHandler):
                 endpoint_info = self.tabpy_state.delete_endpoint(name)
             except Exception as e:
                 self.error_out(400, f"Error when removing endpoint: {e.message}")
-                self.finish()
                 return
 
             # delete files
@@ -119,7 +113,6 @@ class EndpointHandler(ManagementHandler):
                     yield self._delete_po_future(delete_path)
                 except Exception as e:
                     self.error_out(400, f"Error while deleting: {e}")
-                    self.finish()
                     return
 
             self.set_status(204)
@@ -128,7 +121,6 @@ class EndpointHandler(ManagementHandler):
         except Exception as e:
             err_msg = format_exception(e, "delete endpoint")
             self.error_out(500, err_msg)
-            self.finish()
 
         on_state_change(
             self.settings, self.tabpy_state, self.python_service, self.logger

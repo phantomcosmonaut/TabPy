@@ -75,7 +75,7 @@ class QueryPlaneHandler(BaseHandler):
 
         # add CORS headers if TabPy has a cors_origin specified
         self._add_CORS_header()
-        self.write({})
+        self.finish({})
 
     def _handle_result(self, po_name, data, qry, uid):
         (response_type, response, gls_time) = self._query(po_name, data, uid, qry)
@@ -87,9 +87,9 @@ class QueryPlaneHandler(BaseHandler):
                 "model": po_name,
                 "uuid": uid,
             }
-            self.write(result_dict)
-            self.finish()
+            self.finish(result_dict)
             return (gls_time, response["response"])
+
         else:
             if response_type == UnknownURI:
                 self.error_out(
