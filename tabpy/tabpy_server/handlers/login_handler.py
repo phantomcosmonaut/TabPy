@@ -7,6 +7,7 @@ from tabpy.tabpy_server.handlers.management_handler import ManagementHandler
 from tabpy.tabpy_server.app.SettingsParameters import SettingsParameters
 from tabpy.tabpy_server.handlers.base_handler import authentication_wrapper
 from tabpy.utils import tabpy_user
+from tabpy.tabpy_server.app.util import parse_pwd_file
 import logging
 
 
@@ -38,8 +39,8 @@ class LoginHandler(ManagementHandler):
         """
         Will handle both new user request and update password request
         """
-        if _process_user_request(option="add") == False:
-            if _process_user_request(option="update") == False:
+        if self._process_user_request(option="add") == False:
+            if self._process_user_request(option="update") == False:
                 self.set_status(400, "User not found.")
         self.redirect("/login")
 
