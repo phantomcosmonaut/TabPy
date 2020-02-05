@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+
+<title>Tableau Python Server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<meta name="author" content="Brennan Bugbee">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<link rel="stylesheet" type="text/css" href="{{ static_url('css/main.css') }}">
+
+</head>
+
+<body>
+<div id="header" class="col-sm-auto">
+	<ul id="nav-items">
+		<a href="/"><li>Home</li></a>
+		<a href="https://tableau.com" target="_blank" class="d-none d-md-inline"><img src="{{ static_url('tableau.png') }}" alt="Tableau"></a>
+		<a href="/login"><li id="logout">Logout</li></a>
+	</ul>
+</div>
+
+{% block content %}
+{% end %}
+
+<div id="foot" style="margin-top:10px;">
+  <h3>TabPy Server Info:</h3>
+  <p id="info" style="font-size: 18px;">| 
+  	{% for item in items["info"].keys() %}
+  	{% if items["info"][item] == '' %}
+  		<span>{{ item }}: N/A | </span>
+  	{% else %}
+  		<span>{{ item }}: {{ items["info"][item] }} | </span>
+  	{% end %}
+  	{% end %}
+  </p>
+</div>
+
+</body>
+</html> 

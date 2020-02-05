@@ -1,0 +1,30 @@
+{% extends base.html %}
+{% block content %}
+<style type="text/css">
+label{
+	margin:12px 8px 12px 5px;
+}
+</style>
+
+<!-- password verification -->
+<script type="text/javascript" src="{{ static_url('js/handlers.js') }}"></script>
+
+<div class="row justify-content-center">
+	<div class='col-lg-6 col-sm-8' id="input-field">
+		<h1>Login</h1>
+    	<hr class="my-4">
+		<form method="post">
+		    <div>
+		    	<label>Username</label>
+				<input required type="text" name="username" placeholder="tabpy_user" style="padding:2px;">
+		    </div>
+		    <div>
+				<label>Password</label>
+				<input required type="password" name="password" placeholder="password" style="padding:2px;" id="pwd">
+		    </div>
+			<input type="submit" id="post-btn">
+			<p id="pwd-checker" class="text-danger" style="display: none;">Password must contain 1 uppercase, 1 number, and at least 6 characters.</p>
+		</form>
+	</div>
+</div>
+{% end %}

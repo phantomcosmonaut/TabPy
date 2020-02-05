@@ -1,0 +1,12 @@
+{% extends base.html %}
+{% block content %}
+
+{% if not items["users"] %}
+<p style="text-align: center;">No Users</p>
+{% else %}
+{% for user in items["users"] %}
+<div>{{ user }}</div>
+{% end %}
+{% end %}
+
+{% end %}

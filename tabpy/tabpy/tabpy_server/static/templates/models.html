@@ -1,0 +1,12 @@
+{% extends base.html %}
+{% block content %}
+
+{% if not items["models"] %}
+<p style="text-align: center;">No Models</p>
+{% else %}
+{% for model in items["models"] %}
+<div>{{ model }}</div>
+{% end %}
+{% end %}
+
+{% end %}
