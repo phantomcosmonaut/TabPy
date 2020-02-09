@@ -126,6 +126,7 @@ def authentication_wrapper(func):
     """
     Accepts a rest request as a function and then authenticates the user
     using cookies to allow access to other pages.
+    args[0] is the 'self' of the wrapped method.
     """
     def wrapper(*args):
         self = args[0]
@@ -140,7 +141,7 @@ def authentication_wrapper(func):
             or self.not_authorized == False):
             return func(*args)
         else:
-            self.set_status(400, "Invalid username or password.")
+            self.set_status(400, "Unauthenticated User Request")
             self.redirect("/login")
     return wrapper
 
@@ -172,7 +173,6 @@ class BaseHandler(tornado.web.RequestHandler):
         # We want to duplicate error message in console for
         # loggers are misconfigured or causing the failure
         # themselves
-        print(info)
         self.logger.log(
             logging.ERROR,
             'Responding with status={}, message="{}", info="{}"'.format(
@@ -474,3 +474,4 @@ class BaseHandler(tornado.web.RequestHandler):
             if succeeded:
                 return {"users": [user for user in credentials.keys()]}
         return {}
+        

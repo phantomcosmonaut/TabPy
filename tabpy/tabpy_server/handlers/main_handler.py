@@ -5,7 +5,6 @@ http://myserver:9004/
 
 from tabpy.tabpy_server.handlers.management_handler import ManagementHandler
 from tabpy.tabpy_server.handlers.base_handler import authentication_wrapper
-import logging
 
 
 class MainHandler(ManagementHandler):

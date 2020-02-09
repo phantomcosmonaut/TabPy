@@ -154,6 +154,8 @@ class TabPyApp:
                 (self.subdirectory + r"/", MainHandler, dict(app=self)),
                 (self.subdirectory + r"/login", LoginHandler, dict(app=self)),
                 (self.subdirectory + r"/users", UsersHandler, dict(app=self)),
+                (self.subdirectory + r"/settings", SettingsHandler, dict(app=self)),
+                (self.subdirectory + r"/models", ModelsHandler, dict(app=self)),
                 (
                     self.subdirectory + r"/(.*)",
                     tornado.web.StaticFileHandler,
@@ -263,6 +265,8 @@ class TabPyApp:
              "false"),
             (SettingsParameters.MaxRequestSizeInMb, ConfigParameters.TABPY_MAX_REQUEST_SIZE_MB,
              100),
+            (SettingsParameters.CookieSecret, ConfigParameters.TABPY_COOKIE,
+            "Default_Cookie"),
             #Do not reconfigure static url
             (SettingsParameters.StaticPath, None,
              os.path.join(pkg_path, "tabpy_server", "static")),
@@ -270,9 +274,7 @@ class TabPyApp:
             (SettingsParameters.LoginUrl, None, "/login"),
             #Do not reconfigure template path
             (SettingsParameters.TemplatePath, None, 
-                os.path.join(pkg_path, "tabpy_server", "static", "templates")),
-            (SettingsParameters.CookieSecret, ConfigParameters.TABPY_COOKIE,
-                "Default_Cookie")
+                os.path.join(pkg_path, "tabpy_server", "static", "templates"))
         ]
 
         for setting, parameter, default_val in settings_parameters:

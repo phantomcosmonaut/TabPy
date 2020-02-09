@@ -1,0 +1,15 @@
+{% extends base.html %}
+{% block content %}
+
+<div class="row justify-content-center">
+	<div class="col-auto user-display">
+		<dl>
+			{% for set in items["settings"] %}
+	    		<dt>{{ set }}</dt>
+	    		<dd>{{ items["settings"][set] }}</dd>
+			{% end %}
+	    </dl>
+	</div>
+</div>
+
+{% end %}

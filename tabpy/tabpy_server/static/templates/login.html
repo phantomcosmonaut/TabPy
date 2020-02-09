@@ -1,26 +1,22 @@
 {% extends base.html %}
 {% block content %}
-<style type="text/css">
-label{
-	margin:12px 8px 12px 5px;
-}
-</style>
+
+<script type="text/javascript" src="{{ static_url('js/login.js') }}"></script>
 
 <div class="row justify-content-center">
 	<div class='col-lg-6 col-sm-8' id="input-field">
 		<h1>Login</h1>
     	<hr class="my-4">
-		<form method="post">
-		    <div>
-		    	<label>Username</label>
-				<input required type="text" name="username" placeholder="tabpy_user" style="padding:2px;">
-		    </div>
-		    <div>
-				<label>Password</label>
-				<input required type="password" name="password" placeholder="password" style="padding:2px;" id="pwd">
-		    </div>
-			<input type="submit" id="post-btn">
-		</form>
+	    <div>
+	    	<label>Username</label>
+			<input required type="text" name="username" placeholder="tabpy_user" id="user">
+	    </div>
+	    <div>
+			<label>Password</label>
+			<input required type="password" name="password" placeholder="password" id="pwd">
+	    </div>
+		<button id="post-btn">Submit</button>
+		<p id="result-text"></p>
 	</div>
 </div>
 

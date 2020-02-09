@@ -2,11 +2,42 @@
 {% block content %}
 
 {% if not items["models"] %}
-<p style="text-align: center;">No Models</p>
+<div class="row justify-content-center">
+	<div class="col-auto user-display">
+	    <p>No Models Saved</p>
+	</div>
+</div>
 {% else %}
-{% for model in items["models"] %}
-<div>{{ model }}</div>
+<div class="row justify-content-center">
+	<div class="col-auto user-display">
+		<dl>
+			{% for model in items["models"] %}
+	    		<dt>
+	    			{{ model }}
+	    		</dt>
+	    		<dd>
+	    			{{ model }}
+	    		</dd>
+			{% end %}
+	    </dl>
+	</div>
+</div>
 {% end %}
-{% end %}
+
+<div class="row justify-content-center">
+	<div class='col-lg-6 col-sm-8' id="input-field">
+		<h1>Add Model</h1>
+    	<hr class="my-4">
+	    <div>
+	    	<label>Name: </label>
+			<input required type="text" name="modelname" placeholder="Model Name" id="modelname">
+			<div>
+				<label>Info: </label><br>
+				<textarea required class="form-control" id="model-field" placeholder="Text"></textarea>
+			</div>
+	    </div>
+		<input type="submit" id="post-btn">
+	</div>
+</div>
 
 {% end %}

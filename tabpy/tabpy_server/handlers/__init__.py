@@ -9,6 +9,8 @@ from tabpy.tabpy_server.handlers.service_info_handler import ServiceInfoHandler
 from tabpy.tabpy_server.handlers.status_handler import StatusHandler
 from tabpy.tabpy_server.handlers.login_handler import LoginHandler
 from tabpy.tabpy_server.handlers.users_handler import UsersHandler
+from tabpy.tabpy_server.handlers.settings_handler import SettingsHandler
+from tabpy.tabpy_server.handlers.models_handler import ModelsHandler
 from tabpy.tabpy_server.handlers.upload_destination_handler import (
     UploadDestinationHandler,
 )

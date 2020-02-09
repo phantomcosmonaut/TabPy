@@ -1,12 +1,43 @@
 {% extends base.html %}
 {% block content %}
 
+<!-- password verification -->
+<script type="text/javascript" src="{{ static_url('js/add_user.js') }}"></script>
+
 {% if not items["users"] %}
-<p style="text-align: center;">No Users</p>
+<div class="row justify-content-center">
+	<div class="col-auto user-display">
+	    <p>No Users Saved</p>
+	</div>
+</div>
 {% else %}
-{% for user in items["users"] %}
-<div>{{ user }}</div>
+<div class="row justify-content-center">
+	<div class="col-auto user-display">
+		<ul>
+			{% for user in items["users"] %}
+	    		<li>{{ user }}</li>
+			{% end %}
+	    </ul>
+	</div>
+</div>
 {% end %}
-{% end %}
+
+<div class="row justify-content-center">
+	<div class='col-lg-6 col-sm-8' id="input-field">
+		<h1>Add User</h1>
+    	<hr class="my-4">
+	    <div>
+	    	<label>Username: </label>
+			<input required type="text" name="username" placeholder="tabpy_user" id="user">
+	    </div>
+	    <div>
+			<label>Password: </label>
+			<input required type="password" name="password" placeholder="password" id="pwd">
+	    </div>
+		<button id="post-btn">Submit</button>
+		<p id="pwd-checker" class="text-danger" style="display: none;">Password must contain 1 uppercase, 1 number, and at least 6 characters.</p>
+		<p id="result-text"></p>
+	</div>
+</div>
 
 {% end %}
